@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Memory Assistant</title>
+</head>
+<body>
+
+<h2>AI Memory Assistant</h2>
+
+<h3>Save Memory</h3>
+<textarea id="memory" rows="4" cols="50" placeholder="Enter memory..."></textarea><br><br>
+<button onclick="saveMemory()">Save</button>
+
+<hr>
+
+<h3>Ask Question</h3>
+<input type="text" id="question" size="50" placeholder="Ask something...">
+<button onclick="askQuestion()">Ask</button>
+
+<h3>Response:</h3>
+<p id="response"></p>
+
+<script>
+    async function saveMemory() {
+        const memory = document.getElementById("memory").value;
+
+        const response = await fetch("/save", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({memory: memory})
+        });
+
+        const data = await response.json();
+        alert(data.message);
+        document.getElementById("memory").value = "";
+    }
+
+    async function askQuestion() {
+        const question = document.getElementById("question").value;
+
+        document.getElementById("response").innerText = "Thinking...";
+
+        const response = await fetch("/ask", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({question: question})
+        });
+
+        const data = await response.json();
+        document.getElementById("response").innerText = data.response;
+
+        document.getElementById("question").value = "";
+    }
+</script>
+
+</body>
+</html>
